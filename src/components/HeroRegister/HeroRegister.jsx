@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
@@ -11,10 +11,11 @@ const HeroRegister = () => {
 
     const handleRegister = e => {
         e.preventDefault();
+        const name = e.target.name.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
         const accepted = e.target.terms.checked;
-        console.log(email, password ,accepted);
+        console.log(name,email, password ,accepted);
 
         //reset error
         setRegisterError('')
@@ -41,6 +42,20 @@ const HeroRegister = () => {
             .then(result => {
                 console.log(result.user);
                 setSuccess('User Created Successfully.')
+
+                //update profile
+                updateProfile(result.user,{
+                    displayName: name,
+                    photoURL: "https://example.com/jane-q-user/profile.jpg"
+                })
+                .then(() =>console.log('Profile updated'))
+                .catch()
+
+                // send verification email
+                sendEmailVerification(result.user)
+                .then(()=>{
+                    alert('Check your email and verify account')
+                })
             })
             .catch(error => {
                 console.log(error);
@@ -60,6 +75,12 @@ const HeroRegister = () => {
                             <form onSubmit={handleRegister}>
                                 <div className="form-control">
                                     <label className="label">
+                                        <span className="label-text">Name</span>
+                                    </label>
+                                    <input type="text" placeholder="name" name="name" className="input input-bordered" required />
+                                </div>
+                                <div className="form-control">
+                                    <label className="label">
                                         <span className="label-text">Email</span>
                                     </label>
                                     <input type="email" placeholder="email" name="email" className="input input-bordered" required />
@@ -76,7 +97,7 @@ const HeroRegister = () => {
                                         required />
                                     <div className="realative">
                                         {/* <span onClick={()=> setShowPassword(!showPassword)} className="absolute bg-teal-800 p-1 rounded-lg font-bold cursor-pointer end-0 bottom-36 right-12">show</span> */}
-                                        <span className="absolute right-10 top-[168px]" onClick={() => setShowPassword(!showPassword)}>{
+                                        <span className="absolute right-10 bottom-60" onClick={() => setShowPassword(!showPassword)}>{
                                             showPassword ? <AiFillEye></AiFillEye> : <AiFillEyeInvisible></AiFillEyeInvisible>
                                         }</span>
                                         <br />
