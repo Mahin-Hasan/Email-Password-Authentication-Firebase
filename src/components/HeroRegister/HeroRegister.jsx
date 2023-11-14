@@ -2,6 +2,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 const HeroRegister = () => {
     const [registerError, setRegisterError] = useState('');
@@ -12,7 +13,8 @@ const HeroRegister = () => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
-        console.log(email, password);
+        const accepted = e.target.terms.checked;
+        console.log(email, password ,accepted);
 
         //reset error
         setRegisterError('')
@@ -27,6 +29,11 @@ const HeroRegister = () => {
             setRegisterError('Must have a Uppercase');
             return;
         }
+        else if(!accepted){
+            setRegisterError('Please Accept terms and conditions')
+            return;
+        }
+
 
 
         //create user
@@ -69,17 +76,22 @@ const HeroRegister = () => {
                                         required />
                                     <div className="realative">
                                         {/* <span onClick={()=> setShowPassword(!showPassword)} className="absolute bg-teal-800 p-1 rounded-lg font-bold cursor-pointer end-0 bottom-36 right-12">show</span> */}
-                                        <span onClick={() => setShowPassword(!showPassword)}>{
+                                        <span className="absolute right-10 top-[168px]" onClick={() => setShowPassword(!showPassword)}>{
                                             showPassword ? <AiFillEye></AiFillEye> : <AiFillEyeInvisible></AiFillEyeInvisible>
                                         }</span>
-                                         
+                                        <br />
+                                        <div className="mb-2">
+                                            <input type="checkbox" name="terms" id="terms" />
+                                            <label className="ms-2" htmlFor="terms">Accept terms & conditions</label>
+                                        </div>
                                     </div>
                                     <label className="label">
                                         <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                     </label>
+                                    <p>Already have an account? please <Link to='/login'><button className="px-2 py-1 bg-pink-700 rounded-md text-black font-bold">Login</button></Link></p>
                                 </div>
                                 <div className="form-control mt-6">
-                                    <button className="btn btn-primary">Login</button>
+                                    <button className="btn btn-primary">Register</button>
                                 </div>
                             </form>
                         </div>

@@ -21,9 +21,9 @@ const Register = () => {
             <div className="mx-auto md:w-1/2">
                 <h2 className="text-3xl mb-8">Please Register</h2>
                 <form onSubmit={handleRegister}>
-                    <input className="mb-4 w-3/4 px-2 py-4 rounded-lg" type="email" placeholder="Your Email" name="email" id="" />
+                    <input className="mb-4 w-3/4 px-2 py-4 rounded-lg" type="email" placeholder="Your Email" name="email" id="email" />
                     <br />
-                    <input className="mb-4 w-3/4 px-2 py-4 rounded-lg" type="password" placeholder="Enter Password" name="password" id="" />
+                    <input className="mb-4 w-3/4 px-2 py-4 rounded-lg" type="password" placeholder="Enter Password" name="password" id="password" />
                     <br />
                     <input className=" btn btn-primary mb-4 w-3/4" type="submit" value="Register" />
                 </form>
