@@ -1,19 +1,43 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useState } from "react";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 const HeroRegister = () => {
+    const [registerError, setRegisterError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
     const handleRegister = e => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
         console.log(email, password);
 
+        //reset error
+        setRegisterError('')
+        setSuccess('')
+
+
+        if (password.length < 6) { //client side validation
+            setRegisterError('Password should be at least 6 characters or long');
+            return;
+        }
+        else if (!/[A-Z]/.test(password)) { // ! means if false than below code will execute
+            setRegisterError('Must have a Uppercase');
+            return;
+        }
+
+
+        //create user
         createUserWithEmailAndPassword(auth, email, password)
             .then(result => {
                 console.log(result.user);
+                setSuccess('User Created Successfully.')
             })
             .catch(error => {
                 console.log(error);
+                setRegisterError(error.message);
             })
     }
     return (
@@ -37,7 +61,19 @@ const HeroRegister = () => {
                                     <label className="label">
                                         <span className="label-text">Password</span>
                                     </label>
-                                    <input type="password" placeholder="password" name="password" className="input input-bordered" required />
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="password"
+                                        name="password"
+                                        className="input input-bordered"
+                                        required />
+                                    <div className="realative">
+                                        {/* <span onClick={()=> setShowPassword(!showPassword)} className="absolute bg-teal-800 p-1 rounded-lg font-bold cursor-pointer end-0 bottom-36 right-12">show</span> */}
+                                        <span onClick={() => setShowPassword(!showPassword)}>{
+                                            showPassword ? <AiFillEye></AiFillEye> : <AiFillEyeInvisible></AiFillEyeInvisible>
+                                        }</span>
+                                         
+                                    </div>
                                     <label className="label">
                                         <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                     </label>
@@ -49,6 +85,14 @@ const HeroRegister = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className="text-center mb-12">
+                {
+                    registerError && <p className="text-red-600">{registerError}</p>
+                }
+                {
+                    success && <p className="text-lime-500">{success}</p>
+                }
             </div>
         </div>
     );
